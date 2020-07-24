@@ -2,6 +2,8 @@ package it.dst.azienda.service;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
 
@@ -22,5 +24,7 @@ public interface UtenteServiceDAO {
 	Utente findByUsernameAndPassword(String username, String password);
 
 	void addServizio(Utente utente, Servizio servizio);
+	
+	UserDetails loadUserByUsername(String username);
 
 }

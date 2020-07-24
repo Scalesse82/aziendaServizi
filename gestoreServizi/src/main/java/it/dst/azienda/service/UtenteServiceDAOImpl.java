@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import it.dst.azienda.configuration.JwtUserFactory;
 import it.dst.azienda.model.Ruolo;
 import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
@@ -73,6 +76,18 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	public void addServizio(Utente utente, Servizio servizio) {
 		utente.getListaServizi().add(servizio);
 		utenteRepo.save(utente);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) {
+		 Utente user = utenteRepo.findByUsername(username);
+
+	        if (user == null) {
+	            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+	        } else {
+	            return JwtUserFactory.create(user);
+	        }
+	    
 	}
 
 }

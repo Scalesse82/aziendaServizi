@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +23,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.dst.azienda.configuration.JwtAuthenticationRequest;
 import it.dst.azienda.configuration.JwtTokenUtil;
+import it.dst.azienda.model.Utente;
+import it.dst.azienda.service.JwtAuthenticationResponse;
+import it.dst.azienda.service.UtenteServiceDAO;
 
 @RestController
 public class ServiziController {
+	@Autowired
+	private UtenteServiceDAO utenteService;
 	
 
     @Value("${jwt.header}")
@@ -74,6 +80,11 @@ public class ServiziController {
             return ResponseEntity.badRequest().body(null);
         }
         
+    }
+    @PostMapping(value = "public/registrazione")
+    public boolean registrazioneUtente(@RequestBody Utente utente) {
+    	utenteService.add(utente);
+    	return true;
     }
 
 
