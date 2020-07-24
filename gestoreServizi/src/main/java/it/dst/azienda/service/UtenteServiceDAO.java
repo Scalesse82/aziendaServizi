@@ -25,6 +25,6 @@ public interface UtenteServiceDAO {
 
 	void addServizio(Utente utente, Servizio servizio);
 	
-	UserDetails loadUserByUsername(String username);
+	
 
 }

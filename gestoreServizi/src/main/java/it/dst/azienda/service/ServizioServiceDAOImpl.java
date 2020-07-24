@@ -41,10 +41,6 @@ public class ServizioServiceDAOImpl implements ServizioServiceDAO {
 		return servizioRepo.findById(id).get();
 	}
 
-	@Override
-	public void addUtente(Servizio servizio, Utente utente) {
-		servizio.getListaUtenti().add(utente);
-		servizioRepo.save(servizio);
-	}
+	
 
 }

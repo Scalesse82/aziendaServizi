@@ -27,7 +27,8 @@ public class Utente {
 	@JoinTable(name = "utente_ruolo", joinColumns = @JoinColumn(name = "utente_id"), inverseJoinColumns = @JoinColumn(name = "ruolo_id"))
 	private Set<Ruolo> ruolo;
 	private boolean active;
-	@ManyToMany(mappedBy = "utente")
+	@ManyToMany
+	@JoinTable(name = "utente_servizio", joinColumns = @JoinColumn(name = "utente_id"), inverseJoinColumns = @JoinColumn(name = "servizio_id"))
 	private List<Servizio> listaServizi;
 
 	public Long getId() {

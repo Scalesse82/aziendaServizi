@@ -17,6 +17,6 @@ public interface ServizioServiceDAO {
 
 	Servizio findById(Long Id);
 
-	void addUtente(Servizio servizio, Utente utente);
+	
 
 }

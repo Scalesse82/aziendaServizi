@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,14 +24,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.dst.azienda.configuration.JwtAuthenticationRequest;
 import it.dst.azienda.configuration.JwtTokenUtil;
+import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
 import it.dst.azienda.service.JwtAuthenticationResponse;
+import it.dst.azienda.service.RuoloServiceDAO;
+import it.dst.azienda.service.ServizioServiceDAO;
 import it.dst.azienda.service.UtenteServiceDAO;
 
 @RestController
 public class ServiziController {
 	@Autowired
 	private UtenteServiceDAO utenteService;
+	@Autowired
+	private ServizioServiceDAO servizioService;
 	
 
     @Value("${jwt.header}")
@@ -85,6 +91,19 @@ public class ServiziController {
     public boolean registrazioneUtente(@RequestBody Utente utente) {
     	utenteService.add(utente);
     	return true;
+    }
+    @PostMapping(value= "protected/servizi")
+    public boolean creaServizi(@RequestBody Servizio servizio, HttpServletRequest request, HttpServletResponse response) {
+    	
+    	 String token = request.getHeader(tokenHeader);
+         UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
+         
+         if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        	 servizioService.add(servizio);
+        	 return true;
+		}
+    	return false;
+    	
     }
 
 

@@ -19,18 +19,13 @@ import it.dst.azienda.repository.UtenteRepository;
 
 @Service
 public class UtenteServiceDAOImpl implements UtenteServiceDAO {
-
+	@Autowired
 	private UtenteRepository utenteRepo;
+	@Autowired
 	private RuoloRepository ruoloRepo;
+	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@Autowired
-	public UtenteServiceDAOImpl(UtenteRepository utenteRepo, RuoloRepository ruoloRepo,
-			BCryptPasswordEncoder bCryptPasswordEncoder) {
-		this.utenteRepo = utenteRepo;
-		this.ruoloRepo = ruoloRepo;
-		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}
 
 	@Override
 	public Utente add(Utente utente) {
@@ -78,16 +73,6 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 		utenteRepo.save(utente);
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) {
-		 Utente user = utenteRepo.findByUsername(username);
-
-	        if (user == null) {
-	            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
-	        } else {
-	            return JwtUserFactory.create(user);
-	        }
-	    
-	}
+	
 
 }

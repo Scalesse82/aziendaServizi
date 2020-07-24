@@ -22,9 +22,7 @@ public class Servizio {
 	private String nome;
 	private String descrizione;
 	private Integer qta;
-	@ManyToMany
-	@JoinTable(name = "servizio_utente", joinColumns = @JoinColumn(name = "servizio_id"), inverseJoinColumns = @JoinColumn(name = "utente_id"))
-	private List<Utente> listaUtenti;
+
 	public Long getId() {
 		return id;
 	}
@@ -49,12 +47,7 @@ public class Servizio {
 	public void setQta(Integer qta) {
 		this.qta = qta;
 	}
-	public List<Utente> getListaUtenti() {
-		return listaUtenti;
-	}
-	public void setListaUtenti(List<Utente> listaUtenti) {
-		this.listaUtenti = listaUtenti;
-	}
+	
 	
 	public Memento saveStateToMemento(){
 	      return new Memento(this);
@@ -65,7 +58,7 @@ public class Servizio {
 	      this.nome=memento.getServizio().getNome();
 	      this.descrizione=memento.getServizio().getDescrizione();
 	      this.qta=memento.getServizio().getQta();
-	      this.listaUtenti=new ArrayList<Utente>();
+
 	       
 	   }
 	
