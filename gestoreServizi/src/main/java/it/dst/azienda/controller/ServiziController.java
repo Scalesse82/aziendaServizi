@@ -1,8 +1,27 @@
 package it.dst.azienda.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import it.dst.azienda.configuration.JwtAuthenticationRequest;
+import it.dst.azienda.configuration.JwtTokenUtil;
 
 @RestController
 public class ServiziController {
@@ -21,7 +40,7 @@ public class ServiziController {
     private UserDetailsService userDetailsService;
 
     @RequestMapping(value = "public/login", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest, Device device, HttpServletResponse response) throws AuthenticationException, JsonProcessingException {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) throws AuthenticationException, JsonProcessingException {
 
         // Effettuo l autenticazione
         final Authentication authentication = authenticationManager.authenticate(
@@ -34,7 +53,7 @@ public class ServiziController {
 
         // Genero Token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails, device);
+        final String token = jwtTokenUtil.generateToken(userDetails);
         response.setHeader(tokenHeader,token);
         // Ritorno il token
         return ResponseEntity.ok(new JwtAuthenticationResponse(userDetails.getUsername(),userDetails.getAuthorities()));
@@ -54,6 +73,7 @@ public class ServiziController {
         } else {
             return ResponseEntity.badRequest().body(null);
         }
+        
     }
 
 
