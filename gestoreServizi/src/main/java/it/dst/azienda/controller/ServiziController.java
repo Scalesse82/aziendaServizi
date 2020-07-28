@@ -136,4 +136,18 @@ public class ServiziController {
 	
     	
     }
+    @PostMapping(value="protected/reset")
+    public boolean resetServizi(HttpServletRequest request, HttpServletResponse response) {
+    	 String token = request.getHeader(tokenHeader);
+         UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
+         
+         if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+        	 for (Memento memento : careTaker.getMementoList()) {
+				servizioService.add(memento.getServizio());
+			}
+        	 utenteService.resetAll();
+        	 return true;
+         }
+         return false;
+    }
 }

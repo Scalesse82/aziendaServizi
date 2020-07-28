@@ -1,11 +1,11 @@
 package it.dst.azienda.model;
 
-import java.util.List;
+
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +29,7 @@ public class Utente {
 	private boolean active;
 	@ManyToMany
 	@JoinTable(name = "utente_servizio", joinColumns = @JoinColumn(name = "utente_id"), inverseJoinColumns = @JoinColumn(name = "servizio_id"))
-	private List<Servizio> listaServizi;
+	private Set<Servizio> listaServizi;
 
 	public Long getId() {
 		return id;
@@ -73,11 +73,11 @@ public class Utente {
 		this.active = active;
 	}
 
-	public List<Servizio> getListaServizi() {
+	public Set<Servizio> getListaServizi() {
 		return listaServizi;
 	}
 
-	public void setListaServizi(List<Servizio> listaServizi) {
+	public void setListaServizi(Set<Servizio> listaServizi) {
 		this.listaServizi = listaServizi;
 	}
 

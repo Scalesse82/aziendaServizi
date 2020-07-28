@@ -25,6 +25,6 @@ public interface UtenteServiceDAO {
 
 	boolean addServizio(Utente utente, Servizio servizio);
 	
-	
+	void resetAll();
 
 }

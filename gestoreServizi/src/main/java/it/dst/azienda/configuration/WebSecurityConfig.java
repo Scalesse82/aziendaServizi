@@ -21,6 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import it.dst.azienda.memento.CareTaker;
+
 
 @Configuration
 @EnableWebSecurity
@@ -50,6 +52,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	    @Bean
 	    public BCryptPasswordEncoder bCryptPasswordEncoder() {
 	        return new BCryptPasswordEncoder();
+	    }
+	    @Bean
+	    public CareTaker careTaker() {
+	    	return new CareTaker();
 	    }
 
 	    @Bean

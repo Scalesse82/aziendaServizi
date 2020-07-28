@@ -1,5 +1,6 @@
 package it.dst.azienda.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,6 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	private ServizioRepository servizioRepo;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
 
 	@Override
 	public Utente add(Utente utente) {
@@ -73,16 +73,23 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	@Override
 	public boolean addServizio(Utente u, Servizio servizio) {
 		Utente utente = utenteRepo.findByUsername(u.getUsername());
-		if(utente.getListaServizi().size() < 3) {
-			servizio.setQta(servizio.getQta() -1);
+		if (utente.getListaServizi().size() < 3) {
+			servizio.setQta(servizio.getQta() - 1);
 			servizioRepo.save(servizio);
-		utente.getListaServizi().add(servizio);
-		utenteRepo.save(utente);
-		return true;
-	}   return false;
+			utente.getListaServizi().add(servizio);
+			utenteRepo.save(utente);
+			return true;
+		}
+		return false;
 	}
-	
 
-	
+	@Override
+	public void resetAll() {
+		for (Utente utente : utenteRepo.findAll()) {
+			utente.setListaServizi(new HashSet<>());
+			utenteRepo.save(utente);
+		}
+
+	}
 
 }
