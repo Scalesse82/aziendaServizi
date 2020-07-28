@@ -32,6 +32,7 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 
 	@Override
 	public Utente add(Utente utente) {
+		utente.setListaServizi(new HashSet<Servizio>());
 		utente.setPassword(bCryptPasswordEncoder.encode(utente.getPassword()));
 		utente.setActive(true);
 		Ruolo ruolo = ruoloRepo.findByRuolo("UTENTE");
@@ -90,6 +91,15 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 			utenteRepo.save(utente);
 		}
 
+	}
+
+	@Override
+	public Utente addAdmin(Utente utente) {
+		utente.setPassword(bCryptPasswordEncoder.encode(utente.getPassword()));
+		utente.setActive(true);
+		Ruolo ruolo = ruoloRepo.findByRuolo("ADMIN");
+		utente.setRuolo(new HashSet<Ruolo>(Arrays.asList(ruolo)));
+		return utenteRepo.save(utente);
 	}
 
 }

@@ -10,6 +10,8 @@ import it.dst.azienda.model.Utente;
 public interface UtenteServiceDAO {
 
 	Utente add(Utente utente);
+	
+	Utente addAdmin(Utente utente);
 
 	List<Utente> findAll();
 

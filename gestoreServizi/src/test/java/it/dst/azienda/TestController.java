@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
 import it.dst.azienda.service.ServizioServiceDAO;
+import it.dst.azienda.service.UtenteServiceDAO;
 
 
 @ExtendWith(SpringExtension.class)
@@ -38,7 +39,36 @@ public class TestController {
 	private MockMvc mock;
 	@Autowired
 	private ServizioServiceDAO servizioServ;
+    @Autowired
+    private UtenteServiceDAO utenteServ;
+	
+	
+	//test di registrazione utente
+	@Test
+	public void testRegistrazione() throws Exception {		
+		Utente u= new Utente();
+		u.setUsername("utente");
+		u.setPassword("utente");
+		ObjectMapper obj = new ObjectMapper();
+		
+		MvcResult p = mock.perform(post("/public/registrazione").content(obj.writeValueAsString(u)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+		    
+            assertEquals("true" , p.getResponse().getContentAsString());		
 
+	}
+	@Test
+	public void testRegistrazioneAdmin() throws Exception {		
+		Utente u= new Utente();
+		u.setUsername("admin");
+		u.setPassword("admin");
+		ObjectMapper obj = new ObjectMapper();
+		
+		MvcResult p = mock.perform(post("/public/registrazioneAdmin").content(obj.writeValueAsString(u)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+		    
+            assertEquals("true" , p.getResponse().getContentAsString());		
+
+	}
+	
 	@Test
 	public void testAddServizio() throws Exception {		
 		Utente u= new Utente();
@@ -58,21 +88,7 @@ public class TestController {
 
 	}
 	
-	
-	
-	@Test
-	public void testRegistrazione() throws Exception {		
-		Utente u= new Utente();
-		u.setUsername("utente");
-		u.setPassword("utente");
-		ObjectMapper obj = new ObjectMapper();
-		
-		MvcResult p = mock.perform(post("/public/registrazione").content(obj.writeValueAsString(u)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
-		    
-            assertEquals("true" , p.getResponse().getContentAsString());		
 
-	}
-	
 	//controlliamo se la lista non contiene un oggetto servizio chiamato "vuoto" che ha qta =0
 	@Test
 	public void testVerifica() throws Exception {		
@@ -94,7 +110,38 @@ public class TestController {
 
 	}
 	
-	
-	
+	@Test
+	public void testAddServizioToUtente() throws Exception {		
+		Utente u= new Utente();
+		u.setUsername("utente");
+		u.setPassword("utente");
+		ObjectMapper obj = new ObjectMapper();
+		MvcResult p = mock.perform(post("/public/login").content(obj.writeValueAsString(u)).contentType(MediaType.APPLICATION_JSON)).andReturn();
+		System.out.println(p.getResponse().getHeader("X-Auth"));
+			Servizio servizioPrima = servizioServ.findById((long)1);
+		    mock.perform(post("/protected/iscrizione").content(obj.writeValueAsString(Long.parseLong("1"))).contentType(MediaType.APPLICATION_JSON).header("X-Auth", p.getResponse().getHeader("X-Auth"))).andExpect(status().isOk()).andReturn();
+			Servizio servizioDopo = servizioServ.findById((long)1);
+            assertEquals(servizioPrima.getQta() , servizioDopo.getQta()+1);		
+
+	}
+	@Test
+	public void testReset() throws Exception {		
+		Utente u= new Utente();
+		u.setUsername("admin");
+		u.setPassword("admin");
+		ObjectMapper obj = new ObjectMapper();
+		MvcResult p = mock.perform(post("/public/login").content(obj.writeValueAsString(u)).contentType(MediaType.APPLICATION_JSON)).andReturn();
+		System.out.println(p.getResponse().getHeader("X-Auth"));
+		mock.perform(post("/protected/reset").header("X-Auth", p.getResponse().getHeader("X-Auth"))).andExpect(status().isOk()).andReturn();
+	//	boolean listeVuote = false;
+	//	for (Utente utente : utenteServ.findAll()) {
+	//		if(utente.getListaServizi().size() <= 0) 
+	//			listeVuote = true;
+	//		else listeVuote = false;
+	//	}
+	//	assertTrue(listeVuote);
+           	
+
+	}
 	
 }

@@ -97,6 +97,11 @@ public class ServiziController {
     	utenteService.add(utente);
     	return true;
     }
+    @PostMapping(value = "public/registrazioneAdmin")
+    public boolean registrazioneAdmin(@RequestBody Utente utente) {
+    	utenteService.addAdmin(utente);
+    	return true;
+    }
     @PostMapping(value= "protected/servizi")
     public boolean creaServizi(@RequestBody Servizio servizio, HttpServletRequest request, HttpServletResponse response) {
     	
