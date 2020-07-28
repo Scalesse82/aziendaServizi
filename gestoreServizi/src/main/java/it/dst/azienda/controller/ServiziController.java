@@ -124,12 +124,12 @@ public class ServiziController {
     }
     
     @PostMapping(value="protected/iscrizione")
-    public boolean iscrizioneServizi(@RequestBody Servizio servizio, HttpServletRequest request, HttpServletResponse response) {
+    public boolean iscrizioneServizi(@RequestBody Long id, HttpServletRequest request, HttpServletResponse response) {
    	 String token = request.getHeader(tokenHeader);
      UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
      
      if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("UTENTE"))) {
-    	 utenteService.addServizio(utenteService.findByUsername(jwtTokenUtil.getUsernameFromToken(token)),servizio );
+    	 utenteService.addServizio(utenteService.findByUsername(jwtTokenUtil.getUsernameFromToken(token)),servizioService.findById(id));
     	 return true;
 	}
 	return false;
