@@ -23,7 +23,7 @@ public interface UtenteServiceDAO {
 
 	Utente findByUsernameAndPassword(String username, String password);
 
-	void addServizio(Utente utente, Servizio servizio);
+	boolean addServizio(Utente utente, Servizio servizio);
 	
 	
 

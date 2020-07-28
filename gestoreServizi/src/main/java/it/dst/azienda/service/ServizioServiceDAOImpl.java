@@ -1,5 +1,6 @@
 package it.dst.azienda.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,15 @@ public class ServizioServiceDAOImpl implements ServizioServiceDAO {
 		return servizioRepo.findById(id).get();
 	}
 
-	
+	@Override
+	public List<Servizio> findDisponibili() {
+		List<Servizio> disponibili = new ArrayList<>();
+		for (Servizio servizio : servizioRepo.findAll()) {
+			if (servizio.getQta() > 0) {
+				disponibili.add(servizio);
+			}
+		}
+		return disponibili;
+	}
 
 }

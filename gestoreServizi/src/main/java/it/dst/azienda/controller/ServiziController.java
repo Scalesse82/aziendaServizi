@@ -1,5 +1,7 @@
 package it.dst.azienda.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +26,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import it.dst.azienda.configuration.JwtAuthenticationRequest;
 import it.dst.azienda.configuration.JwtTokenUtil;
+import it.dst.azienda.memento.CareTaker;
+import it.dst.azienda.memento.Memento;
 import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
 import it.dst.azienda.service.JwtAuthenticationResponse;
@@ -41,7 +45,8 @@ public class ServiziController {
 
     @Value("${jwt.header}")
     private String tokenHeader;
-
+    @Autowired
+    private CareTaker careTaker;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -99,12 +104,36 @@ public class ServiziController {
          UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
          
          if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
-        	 servizioService.add(servizio);
+        	Servizio aggiunto = servizioService.add(servizio);
+        	careTaker.getMementoList().add(new Memento(aggiunto));
+        	
         	 return true;
 		}
     	return false;
     	
     }
 
-
+    @PostMapping(value="protected/verifica")
+    public List<Servizio> verificaServizi(HttpServletRequest request, HttpServletResponse response){
+    	 String token = request.getHeader(tokenHeader);
+         UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
+         if(! userDetails.getAuthorities().isEmpty()) {
+    	 return servizioService.findDisponibili();
+         }
+    	return null;
+    }
+    
+    @PostMapping(value="protected/iscrizione")
+    public boolean iscrizioneServizi(@RequestBody Servizio servizio, HttpServletRequest request, HttpServletResponse response) {
+   	 String token = request.getHeader(tokenHeader);
+     UserDetails userDetails =jwtTokenUtil.getUserDetails(token);
+     
+     if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("UTENTE"))) {
+    	 utenteService.addServizio(utenteService.findByUsername(jwtTokenUtil.getUsernameFromToken(token)),servizio );
+    	 return true;
+	}
+	return false;
+	
+    	
+    }
 }

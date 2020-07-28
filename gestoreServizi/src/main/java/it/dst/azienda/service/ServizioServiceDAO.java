@@ -17,6 +17,6 @@ public interface ServizioServiceDAO {
 
 	Servizio findById(Long Id);
 
-	
+	List<Servizio> findDisponibili();
 
 }

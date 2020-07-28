@@ -15,6 +15,7 @@ import it.dst.azienda.model.Ruolo;
 import it.dst.azienda.model.Servizio;
 import it.dst.azienda.model.Utente;
 import it.dst.azienda.repository.RuoloRepository;
+import it.dst.azienda.repository.ServizioRepository;
 import it.dst.azienda.repository.UtenteRepository;
 
 @Service
@@ -24,6 +25,8 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	@Autowired
 	private RuoloRepository ruoloRepo;
 	@Autowired
+	private ServizioRepository servizioRepo;
+	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -31,7 +34,7 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	public Utente add(Utente utente) {
 		utente.setPassword(bCryptPasswordEncoder.encode(utente.getPassword()));
 		utente.setActive(true);
-		Ruolo ruolo = ruoloRepo.findByRuolo("ADMIN");
+		Ruolo ruolo = ruoloRepo.findByRuolo("UTENTE");
 		utente.setRuolo(new HashSet<Ruolo>(Arrays.asList(ruolo)));
 		return utenteRepo.save(utente);
 	}
@@ -68,10 +71,17 @@ public class UtenteServiceDAOImpl implements UtenteServiceDAO {
 	}
 
 	@Override
-	public void addServizio(Utente utente, Servizio servizio) {
+	public boolean addServizio(Utente u, Servizio servizio) {
+		Utente utente = utenteRepo.findByUsername(u.getUsername());
+		if(utente.getListaServizi().size() < 3) {
+			servizio.setQta(servizio.getQta() -1);
+			servizioRepo.save(servizio);
 		utente.getListaServizi().add(servizio);
 		utenteRepo.save(utente);
+		return true;
+	}   return false;
 	}
+	
 
 	
 
